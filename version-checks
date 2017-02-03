@@ -17,7 +17,7 @@ DEP[0]=md-addins
 DEP_NAME[0]=MDADDINS
 DEP_PATH[0]=${top_srcdir}/../md-addins
 DEP_MODULE[0]=git@github.com:xamarin/md-addins.git
-DEP_NEEDED_VERSION[0]=4af524c91f61712268cf740466ac4ae32da0124a
+DEP_NEEDED_VERSION[0]=13183bb5102a8a717e40c38f6b88b34e30c9d0ae
 DEP_BRANCH_AND_REMOTE[0]="vstelemetry origin/vstelemetry"
  
 # heap-shot
