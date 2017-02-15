@@ -48,7 +48,7 @@ namespace Application
 		{
 			var biFile = System.Reflection.Assembly.GetEntryAssembly ().Location;
 			biFile = Path.GetDirectoryName (biFile);
-			biFile = Path.Combine (biFile, "..", "..", "..", "build", "bin", "buildinfo");
+			biFile = Path.Combine (biFile, "fullbuildinfo", "buildinfo");
 
 			if (File.Exists (biFile)) {
 				var line = File.ReadAllLines (biFile).Select (l => l.Split (':')).FirstOrDefault (a => a.Length > 1 && a [0].Trim () == "Release ID");

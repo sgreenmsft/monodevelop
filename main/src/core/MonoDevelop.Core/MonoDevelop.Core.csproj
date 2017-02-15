@@ -11,6 +11,7 @@
     <RootNamespace>MonoDevelop.Core</RootNamespace>
     <BuildInfo>..\..\..\build\bin\buildinfo</BuildInfo>
     <VcRevision>..\..\..\vcrevision</VcRevision>
+    <FullBuildInfo>fullbuildinfo</FullBuildInfo>
     <MonoLauncher Condition=" '$(VisualStudioVersion)' == '' ">mono </MonoLauncher>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
@@ -719,11 +720,14 @@
     <Folder Include="MSBuild\" />
   </ItemGroup>
   <Target Name="BeforeBuild" Inputs="BuildVariables.cs.in; $(MSBuildProjectDirectory)\..\..\..\..\version.config" Outputs="BuildVariables.cs">
+    <MakeDir Directories="$(FullBuildInfo)" />
+    <Exec Command="$(MonoLauncher)$(MSBuildProjectDirectory)\..\..\..\..\scripts\configure.exe gen-buildinfo $(FullBuildInfo)" WorkingDirectory="$(MSBuildProjectDirectory)" />
     <Csc Sources="BuildVariables.gen.cs" OutputAssembly="BuildVariables.gen.exe" ToolExe="$(CscToolExe)" ToolPath="$(CscToolPath)" />
     <Exec Command="$(MonoLauncher)$(MSBuildProjectDirectory)\BuildVariables.gen.exe ." WorkingDirectory="$(MSBuildProjectDirectory)" />
     <Delete Files="BuildVariables.gen.exe" />
     <MakeDir Directories="$(OutputPath)" />
     <Exec Command="&quot;$(Git)&quot; rev-parse HEAD &gt; $(BuildInfo)" WorkingDirectory="$(MSBuildProjectDirectory)" IgnoreExitCode="True" />
     <Exec Command="&quot;$(Git)&quot; rev-parse HEAD &gt; $(VcRevision)" WorkingDirectory="$(MSBuildProjectDirectory)" IgnoreExitCode="True" />
+    <RemoveDir Directories="$(FullBuildInfo)" />
   </Target>
 </Project>
