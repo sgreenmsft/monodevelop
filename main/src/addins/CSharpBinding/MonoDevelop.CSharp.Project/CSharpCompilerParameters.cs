@@ -31,7 +31,6 @@ using System.Collections.Generic;
 using MonoDevelop.Projects;
 using MonoDevelop.Core.Serialization;
 using MonoDevelop.Core;
-using Mono.Collections.Generic;
 using System.Linq;
 using MonoDevelop.Projects.MSBuild;
 using System.Collections.Immutable;
