@@ -518,7 +518,7 @@ namespace MonoDevelop.Ide.Gui.Pads
 					}
 					text.Append (": ");
 				}
-				text.Append (task.Severity);
+				text.Append (task.Severity.ToString ());
 				if (!string.IsNullOrEmpty (task.Code)) {
 					text.Append (" ").Append (task.Code);
 				}
