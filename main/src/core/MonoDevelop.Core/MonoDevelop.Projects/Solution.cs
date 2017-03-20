@@ -650,14 +650,14 @@ namespace MonoDevelop.Projects
 			return Clean (monitor, (SolutionConfigurationSelector) configuration);
 		}
 
-		public async Task<BuildResult> Clean (ProgressMonitor monitor, ConfigurationSelector configuration, OperationContext operationContext = null)
+		public Task<BuildResult> Clean (ProgressMonitor monitor, ConfigurationSelector configuration, OperationContext operationContext = null)
 		{
-			return await SolutionExtension.Clean (monitor, configuration, operationContext);
+			return SolutionExtension.Clean (monitor, configuration, operationContext);
 		}
 
-		public async Task<BuildResult> Build (ProgressMonitor monitor, string configuration, OperationContext operationContext = null)
+		public Task<BuildResult> Build (ProgressMonitor monitor, string configuration, OperationContext operationContext = null)
 		{
-			return await SolutionExtension.Build (monitor, (SolutionConfigurationSelector) configuration, operationContext);
+			return SolutionExtension.Build (monitor, (SolutionConfigurationSelector) configuration, operationContext);
 		}
 
 		Task<BuildResult> IBuildTarget.Build (ProgressMonitor monitor, ConfigurationSelector configuration, bool buildReferencedTargets, OperationContext operationContext)
@@ -665,9 +665,9 @@ namespace MonoDevelop.Projects
 			return Build (monitor, configuration, operationContext);
 		}
 
-		public async Task<BuildResult> Build (ProgressMonitor monitor, ConfigurationSelector configuration, OperationContext operationContext = null)
+		public Task<BuildResult> Build (ProgressMonitor monitor, ConfigurationSelector configuration, OperationContext operationContext = null)
 		{
-			return await SolutionExtension.Build (monitor, configuration, operationContext);
+			return SolutionExtension.Build (monitor, configuration, operationContext);
 		}
 
 		public bool NeedsBuilding (ConfigurationSelector configuration)
@@ -1181,7 +1181,7 @@ namespace MonoDevelop.Projects
 				EntryModified (this, args);
 		}
 		
-		internal /*protected virtual*/ void OnEntrySaved (SolutionItemEventArgs args)
+		internal /*protected virtual*/ void OnEntrySaved (SolutionItemSavedEventArgs args)
 		{
 			if (EntrySaved != null)
 				EntrySaved (this, args);
@@ -1210,7 +1210,7 @@ namespace MonoDevelop.Projects
 		public event ProjectReferenceEventHandler ReferenceAddedToProject;
 		public event ProjectReferenceEventHandler ReferenceRemovedFromProject;
 		public event SolutionItemModifiedEventHandler EntryModified;
-		public event SolutionItemEventHandler EntrySaved;
+		public event SolutionItemSavedEventHandler EntrySaved;
 		public event EventHandler<SolutionItemEventArgs> ItemReloadRequired;
 
 		protected override IEnumerable<WorkspaceObjectExtension> CreateDefaultExtensions ()

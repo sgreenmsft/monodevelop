@@ -1969,7 +1969,7 @@ namespace MonoDevelop.Debugger
 		void ShowPopup (Gdk.EventButton evt)
 		{
 			if (AllowPopupMenu)
-				IdeApp.CommandService.ShowContextMenu (this, evt, menuSet, this);
+				this.ShowContextMenu (evt, menuSet, this);
 		}
 
 		[CommandUpdateHandler (EditCommands.SelectAll)]
@@ -2012,18 +2012,16 @@ namespace MonoDevelop.Debugger
 				}
 			}
 
-			var values = new List<string> ();
-			var names = new List<string> ();
-			var types = new List<string> ();
-			int maxValue = 0;
-			int maxName = 0;
-
+			var str = new StringBuilder ();
+			bool needsNewLine = false;
 			for (int i = 0; i < selected.Length; i++) {
 				if (!store.GetIter (out iter, selected[i]))
 					continue;
+				if (needsNewLine)
+					str.AppendLine ();
+				needsNewLine = true;
 
 				string value = (string) store.GetValue (iter, ValueColumn);
-				string name = (string) store.GetValue (iter, NameColumn);
 				string type = (string) store.GetValue (iter, TypeColumn);
 				if (type == "string") {
 					var objVal = store.GetValue (iter, ObjectColumn) as ObjectValue;
@@ -2033,29 +2031,7 @@ namespace MonoDevelop.Debugger
 						value = '"' + Mono.Debugging.Evaluation.ExpressionEvaluator.EscapeString ((string)objVal.GetRawValue (opt)) + '"';
 					}
 				}
-
-				maxValue = Math.Max (maxValue, value.Length);
-				maxName = Math.Max (maxName, name.Length);
-
-				values.Add (value);
-				names.Add (name);
-				types.Add (type);
-			}
-
-			var str = new StringBuilder ();
-			for (int i = 0; i < values.Count; i++) {
-				if (i > 0)
-					str.AppendLine ();
-
-				str.Append (names[i]);
-				if (names[i].Length < maxName)
-					str.Append (new string (' ', maxName - names[i].Length));
-				str.Append ('\t');
-				str.Append (values[i]);
-				if (values[i].Length < maxValue)
-					str.Append (new string (' ', maxValue - values[i].Length));
-				str.Append ('\t');
-				str.Append (types[i]);
+				str.Append (value);
 			}
 
 			Clipboard.Get (Gdk.Selection.Clipboard).Text = str.ToString ();
@@ -2413,10 +2389,8 @@ namespace MonoDevelop.Debugger
 		}
 	}
 	
-	class DebugCompletionDataList: List<MonoDevelop.Ide.CodeCompletion.CompletionData>, ICompletionDataList
+	class DebugCompletionDataList: CompletionDataList
 	{
-		public int TriggerWordLength { get; set; }
-		public bool IsSorted { get; set; }
 		public DebugCompletionDataList (Mono.Debugging.Client.CompletionData data)
 		{
 			IsSorted = false;
@@ -2424,45 +2398,6 @@ namespace MonoDevelop.Debugger
 				Add (new DebugCompletionData (it));
 			AutoSelect =true;
 		}
-		public bool AutoSelect { get; set; }
-		public string DefaultCompletionString {
-			get {
-				return string.Empty;
-			}
-		}
-
-		public bool AutoCompleteUniqueMatch {
-			get { return false; }
-		}
-		
-		public bool AutoCompleteEmptyMatch {
-			get { return false; }
-		}
-		public bool AutoCompleteEmptyMatchOnCurlyBrace {
-			get { return false; }
-		}
-		public bool CloseOnSquareBrackets {
-			get {
-				return false;
-			}
-		}
-		
-		public CompletionSelectionMode CompletionSelectionMode {
-			get; set;
-		}
-
-		static readonly List<ICompletionKeyHandler> keyHandler = new List<ICompletionKeyHandler> ();
-		public IEnumerable<ICompletionKeyHandler> KeyHandler { get { return keyHandler;} }
-
-		public void OnCompletionListClosed (EventArgs e)
-		{
-			var handler = CompletionListClosed;
-
-			if (handler != null)
-				handler (this, e);
-		}
-		
-		public event EventHandler CompletionListClosed;
 	}
 	
 	class DebugCompletionData : MonoDevelop.Ide.CodeCompletion.CompletionData
